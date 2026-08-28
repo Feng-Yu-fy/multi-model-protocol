@@ -1,0 +1,221 @@
+# 模型注册表 — 多模型共指导协议
+# weight 是决策权重（分权重机制核心）：投票/评审按权重加权，而非按人头。
+# price_in/price_out 为估算单价（USD/百万 token），仅用于成本统计，可自行修改。
+
+[models.gemini-pro]
+name = "Gemini 2.5 Pro"
+provider = "gemini"
+model = "gemini-2.5-pro"
+weight = 1.2
+roles = ["councillor", "chairman"]
+fallbacks = ["gemini-2.5-flash", "gemini-2.0-flash"]
+price_in = 1.25
+price_out = 10.0
+use_search = true
+
+[models.gemini-flash]
+name = "Gemini 2.5 Flash"
+provider = "gemini"
+model = "gemini-2.5-flash"
+weight = 1.0
+roles = ["councillor"]
+fallbacks = ["gemini-2.0-flash"]
+price_in = 0.30
+price_out = 2.50
+use_search = true
+
+# Antigravity CLI 桥接：2026-06-18 起 Google 停止用 Gemini CLI 服务
+# 个人版/AI Pro/Ultra 账号，官方继任者是 Antigravity CLI（agy）。
+# 用 AI Pro 订阅账号登录一次 `agy`，即可无 key、无绑卡直连订阅额度。
+[models.gemini-cli]
+name = "Gemini（Antigravity CLI·订阅）"
+provider = "gemini-cli"
+model = "auto"                  # auto = 用 agy 默认模型；登录后可用 `agy models` 查看并改
+weight = 1.2
+roles = ["councillor"]          # 参与者/辅助者，主持与主干活由 DeepSeek 承担
+price_in = 1.25
+price_out = 10.0
+
+# 中转站示例（OpenAI 兼容端点，支持支付宝/微信充值的那种）：
+# 1) 在 config/keys.local.json 写 {"relay": "sk-你的中转站key"}
+# 2) 把下面注释复制一份，base_url 换成中转站地址，model 换成中转站提供的模型 id
+# [models.relay-gemini]
+# name = "Gemini Pro（中转站）"
+# provider = "relay"
+# base_url = "https://你的中转站域名/v1"
+# model = "gemini-2.5-pro"
+# weight = 1.2
+# roles = ["councillor", "chairman"]
+
+# 官方 DeepSeek 通道
+[models.deepseek]
+name = "DeepSeek Chat"
+provider = "deepseek"
+model = "deepseek-chat"
+weight = 1.1
+roles = ["councillor", "chairman"]
+price_in = 0.27
+price_out = 1.10
+
+[models.grok]
+name = "Grok 4.5"
+provider = "xai"
+model = "grok-4.5"
+weight = 1.2
+roles = ["councillor", "chairman"]
+fallbacks = ["grok-4.1-fast", "grok-3"]
+price_in = 2.0
+price_out = 6.0
+
+[models.grok-search]
+name = "Grok 4.5 (联网搜索)"
+provider = "xai"
+model = "grok-4.5"
+weight = 1.2
+roles = ["councillor", "chairman"]
+fallbacks = ["grok-4.1-fast", "grok-3"]
+price_in = 2.0
+price_out = 6.0
+use_search = true
+
+[models.gpt-mini]
+name = "GPT-4o mini"
+provider = "openai"
+model = "gpt-4o-mini"
+weight = 0.9
+roles = ["councillor"]
+fallbacks = ["gpt-4o"]
+price_in = 0.15
+price_out = 0.60
+
+[models.gpt-4o]
+name = "GPT-4o"
+provider = "openai"
+model = "gpt-4o"
+weight = 1.1
+roles = ["councillor", "chairman"]
+price_in = 2.50
+price_out = 10.0
+
+[models.kimi]
+name = "Kimi K3 (Moonshot)"
+provider = "moonshot"
+model = "kimi-k3"
+weight = 1.0
+roles = ["councillor"]
+fallbacks = ["kimi-k2.5"]       # k2.5 将于 2026-08-31 下线；k2-0905 已停用
+price_in = 0.60
+price_out = 2.50
+
+# 智谱 GLM（国内免卡：手机号注册送额度；key 写 keys.local.json 的 "zhipu"）
+[models.zhipu-glm]
+name = "GLM-5.2 (智谱)"
+provider = "zhipu"
+base_url = "https://open.bigmodel.cn/api/paas/v4"
+model = "glm-5.2"
+weight = 1.1
+roles = ["councillor", "chairman"]
+fallbacks = ["glm-5", "glm-4.7", "glm-4.5-air"]
+price_in = 1.00
+price_out = 4.00
+
+# 日常审议用轻量型号：免费额度用完后降级，关键决策再切回 zhipu-glm(5.2)
+[models.zhipu-glm-lite]
+name = "GLM-4.7 (智谱·日常)"
+provider = "zhipu"
+base_url = "https://open.bigmodel.cn/api/paas/v4"
+model = "glm-4.7"
+weight = 0.9
+roles = ["councillor"]
+fallbacks = ["glm-4.5-air"]
+price_in = 0.30
+price_out = 1.00
+
+# 低耗型号：走 1200 万 GLM-4.5-Air 免费资源包（low 档默认参与者）
+[models.zhipu-glm-air]
+name = "GLM-4.5 Air (智谱·低耗)"
+provider = "zhipu"
+base_url = "https://open.bigmodel.cn/api/paas/v4"
+model = "glm-4.5-air"
+weight = 0.9
+roles = ["councillor"]
+fallbacks = ["glm-4.7"]
+price_in = 0.10
+price_out = 0.30
+
+# 通义千问（阿里云百炼，国内免卡；key 写 keys.local.json 的 "dashscope"）
+[models.qwen]
+name = "Qwen3.5 Flash (百炼)"
+provider = "dashscope"
+base_url = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+model = "qwen3.5-flash"
+weight = 1.0
+roles = ["councillor"]
+fallbacks = ["qwen3-flash", "qwen-plus"]
+price_in = 0.10
+price_out = 0.40
+
+# OpenCode Go 订阅（key 写 keys.local.json 的 "opencode"，OPENCODE_API_KEY 亦可）
+# 超低价模型池：deepseek-v4-flash 约官方价 1/6；同 key 还有 kimi-k3 / grok-4.5 /
+# gpt-5.6-luna / qwen3.8-max 等（全量见 https://opencode.ai/zen/go/v1/models）
+[models.opencode-flash]
+name = "DeepSeek V4 Flash (OpenCode Go)"
+provider = "opencode"
+base_url = "https://opencode.ai/zen/go/v1"
+model = "deepseek-v4-flash"
+weight = 0.9
+roles = ["councillor"]
+price_in = 0.14
+price_out = 0.28
+
+# 决策参与者：Grok 4.5（OpenCode Go）
+[models.opencode-grok]
+name = "Grok 4.5 (OpenCode Go)"
+provider = "opencode"
+base_url = "https://opencode.ai/zen/go/v1"
+model = "grok-4.5"
+weight = 1.2
+roles = ["councillor", "chairman"]
+fallbacks = ["gpt-5.6-luna"]
+price_in = 2.00
+price_out = 6.00
+
+# 决策参与者：GPT-5.6 Luna（OpenCode Go）
+# 注意：单价高（约 flash 的 7-14 倍），不在默认档，仅显式 --models opencode-gpt 时参与。
+[models.opencode-gpt]
+name = "GPT-5.6 Luna (OpenCode Go)"
+provider = "opencode"
+base_url = "https://opencode.ai/zen/go/v1"
+model = "gpt-5.6-luna"
+weight = 1.1
+roles = ["councillor", "chairman"]
+fallbacks = ["kimi-k3"]
+price_in = 0.20
+price_out = 1.20
+
+[models.openrouter-claude]
+name = "Claude (via OpenRouter)"
+provider = "openrouter"
+model = "anthropic/claude-sonnet-4.5"
+weight = 1.3
+roles = ["councillor", "chairman"]
+price_in = 3.0
+price_out = 15.0
+
+[models.openrouter-kimi]
+name = "Kimi K2 (via OpenRouter)"
+provider = "openrouter"
+model = "moonshotai/kimi-k2"
+weight = 1.0
+roles = ["councillor"]
+price_in = 0.60
+price_out = 2.50
+
+[models.openrouter-grok]
+name = "Grok 4.5 (via OpenRouter)"
+provider = "openrouter"
+model = "x-ai/grok-4.5"
+weight = 1.3
+roles = ["councillor", "chairman"]
+price_in = 2.0
+price_out = 6.0

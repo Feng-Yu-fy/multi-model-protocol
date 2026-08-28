@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+sessions/
+config/keys.local.json
+costs_dashboard.json
+costs_dashboard.html
+.DS_Store

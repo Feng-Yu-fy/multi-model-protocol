@@ -1,0 +1,35 @@
+# 协议参数 — 多模型共指导协议
+
+[general]
+default_mode = "debate"        # brainstorm | debate | design | research | review | gate
+default_models = ["opencode-flash", "zhipu-glm-lite", "gemini-flash"]
+default_chairman = "opencode-flash"  # OpenCode Go 的 DeepSeek V4 Flash，成本最低
+default_importance = "medium"  # low=低耗日常 | medium=标准(默认) | high=关键决策
+main_engine_weight = 1.2       # 主引擎（Claude Code / Codex）提案的决策权重
+anonymity = true               # 互审阶段匿名，防品牌附和
+session_dir = "sessions"
+
+# 按重要程度自动切换的模型阵容（--importance 覆盖，也可 --models 显式指定）
+[lineups]
+low = ["opencode-flash", "zhipu-glm-air", "gemini-flash"]      # 超低价日常
+medium = ["opencode-flash", "zhipu-glm-lite", "gemini-flash"]
+high = ["opencode-flash", "zhipu-glm", "opencode-gpt", "gemini-cli"]  # 关键决策
+
+[importance]
+budgets = { low = 0.1, medium = 0.5, high = 1.0 }        # 各档单次审议成本上限(USD)
+
+[quorum]
+min_models = 2                 # 最少有效参与模型数（低于则中止）
+pass_threshold = 0.6           # 加权通过阈值：支持权重 / 参与总权重
+veto_enabled = true            # 关键阻塞（critical blocker）一票否决
+veto_min_weight = 1.0          # 触发否决所需的最低模型权重
+borda_tiebreak = true          # 死锁平票时用 Borda 排名裁决
+
+[limits]
+max_rounds = 3                 # 投票不收敛的最大轮数
+request_timeout = 120          # 单次模型调用超时（秒）
+budget_usd = 0.5               # 单次协议会话预算上限（超出停止）
+
+[keys]
+# 可选：旧工具目录，读取 .gemini_key / .openai_key（迁移期兼容，默认关闭）
+# legacy_dir = "D:\\path\\to\\tools"
